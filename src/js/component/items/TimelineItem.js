@@ -1,4 +1,5 @@
 export function timelineItem(element, data, coord) {
+    // Создание элемента в таймлайне
     const timelineItem = document.createElement('div')
     timelineItem.classList.add('timeline__item')
 
@@ -8,7 +9,6 @@ export function timelineItem(element, data, coord) {
 
     const { text, video, audio } = data
 
-    console.log(text, video, audio);
     let container = null;
     let content = null;
 
@@ -22,14 +22,15 @@ export function timelineItem(element, data, coord) {
     }
     if (audio) {
         container = 'audio'
-        content = video;
+        content = audio;
     }
 
     const itemData = document.createElement(`${container}`)
     itemData.classList.add('item__data')
-    itemData.textContent = content
+    if (text) itemData.textContent = content
     if (!text) {
         itemData.controls = true
+        itemData.src = URL.createObjectURL(content)
     }
 
     const itemCoordinate = document.createElement('span')
@@ -37,5 +38,6 @@ export function timelineItem(element, data, coord) {
     itemCoordinate.textContent = coord
 
     timelineItem.append(itemDate, itemData, itemCoordinate)
-    element.append(timelineItem)
+    element.insertAdjacentElement('afterbegin',timelineItem)
+  
 } 

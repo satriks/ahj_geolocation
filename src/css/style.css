@@ -51,16 +51,29 @@ body {
   border-radius: 50%;
   background-color: gold;
 } */
-
-.timeline__audio, .timeline__video{
+.timeline__buttons{
   position: absolute;
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
   right: 0;
   bottom: 3px;
-  font-size: 20px;
-  /* height: 20px; */
-  /* width: 20px; */
-  /* background-color: red; */
+
 }
+.timeline__audio, .timeline__video, .record__stop, .record__cancel{
+
+  font-size: 20px;
+
+ } 
+
+ .record__stop, .record__cancel{
+  cursor: pointer;
+  border: 1px solid black;
+  border-radius: 50%;
+  text-align: center;
+  width: 25px;
+  height: 25px;
+ }
 
 .timeline__audio{
   right: 50px;
@@ -105,7 +118,7 @@ body {
 }
 
 .geolocation__form{
-  position: absolute;
+  position: fixed;
   left: calc(50% - 200px);
   top: 20%;
   display: flex;
@@ -152,4 +165,48 @@ body {
 .geolocation__error{
   color: red;
   text-align: center;
+}
+
+.action::after{
+  position: absolute;
+  content: "\23F9";
+  left: -1px;
+  width: 30px;
+  height: 30px;
+}
+
+.timeline__stream{
+  position: fixed;
+  bottom:  10%;
+  right: 0;
+  border: 1px solid green;
+  /* background-color: gold; */
+  width: 600px;
+  height: 480px;
+  z-index: 3;
+
+}
+
+.accesses__form{
+  position: absolute;
+  top: 20%;
+  left:calc( 50% - 150px);
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  font-size: 20px;
+  z-index: 3;
+  padding: 15px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.accesses__form > button{
+  flex-grow: 0;
+  width: 100px;
+  height: 25px;
+  margin-top: 10px;
+  align-self: center;
+
 }

@@ -1,4 +1,5 @@
 export function createDom (element){
+    // create dom
     const  timelineWrapper = document.createElement('div');
     timelineWrapper.classList.add('timeline__wrapper');
 
@@ -16,6 +17,10 @@ export function createDom (element){
     timelineInput.setAttribute('type', 'text');
     timelineInput.setAttribute('placeholder', 'Enter your message');
 
+    const timelineButtons = document.createElement('div');
+    timelineButtons.classList.add('timeline__buttons');
+
+
     const timelineAudioBtn = document.createElement('button');
     timelineAudioBtn.classList.add('timeline__audio');
     timelineAudioBtn.textContent = "🎤"
@@ -23,8 +28,9 @@ export function createDom (element){
     const timelineVideoBtn = document.createElement('button');
     timelineVideoBtn.classList.add('timeline__video');
     timelineVideoBtn.textContent = "🎥"
+    timelineButtons.append(timelineAudioBtn, timelineVideoBtn)
 
     timeline.append(timelineLine, timelineBoard)
-    timelineWrapper.append(timeline, timelineInput, timelineAudioBtn, timelineVideoBtn)
+    timelineWrapper.append(timeline, timelineInput, timelineButtons )
     element.append(timelineWrapper);
 }   

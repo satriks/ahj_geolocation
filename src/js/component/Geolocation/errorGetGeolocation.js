@@ -1,6 +1,7 @@
 import { geolocationValidate } from "./geolocationValidate"
 
 export default class ErrorGeolocation {
+    // форма запроса геопозиции
     constructor(callback){
         this.callback = callback
         this.formInput = null
@@ -9,7 +10,7 @@ export default class ErrorGeolocation {
     }
 
     inputPosition (element, data) {
-        // форма запроса геопозиции
+        // создание формы запроса геопозиции
         
         this.callbackElement = element
         this.callbackData = data
@@ -81,9 +82,9 @@ export default class ErrorGeolocation {
     }
 
     onSubmit = (event) => {
+        //валидация
         event.preventDefault()
         
-        //валидация
         const validate = geolocationValidate(this.formInput.value)
         if (validate) {
             this.formInput.value = validate

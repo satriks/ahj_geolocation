@@ -1,4 +1,5 @@
 export function geolocationValidate(str) {
+  //валидация координат
 
     const regex = /-?\d+\.(\d){3,}/g;
     const matches = str.match(regex);
