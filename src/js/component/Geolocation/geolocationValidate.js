@@ -1,12 +1,11 @@
-export function geolocationValidate(str) {
-  //валидация координат
+export function geolocationValidate (str) {
+  // валидация координат
 
-    const regex = /-?\d+\.(\d){3,}/g;
-    const matches = str.match(regex);
-  
-    if (!matches) return null;
-    if (matches.length !== 2) return null;
+  const regex = /-?\d+\.(\d){3,}/g
+  const matches = str.match(regex)
 
-  
-    return `[${matches[0]}, ${matches[1]}]`;
-  }
+  if (!matches) return null
+  if (matches.length !== 2) return null
+
+  return `[${matches[0]}, ${matches[1]}]`
+}

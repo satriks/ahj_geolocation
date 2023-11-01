@@ -1,8 +1,8 @@
-import { createDom } from "./items/createDom";
-import { timelineItem } from "./items/TimelineItem";
-import { getGeolocation } from "./Geolocation/getGeolocation";
-import ErrorGeolocation from "./Geolocation/errorGetGeolocation";
-import { RecordControl } from "./items/createRecordControl";
+import { createDom } from './items/createDom'
+import { timelineItem } from './items/TimelineItem'
+import { getGeolocation } from './Geolocation/getGeolocation'
+import ErrorGeolocation from './Geolocation/errorGetGeolocation'
+import { RecordControl } from './items/createRecordControl'
 
 export default class DomControl {
   constructor () {
@@ -14,7 +14,7 @@ export default class DomControl {
     this.videoStreamELement = null
     this.allow = true
     this.state = true
-    
+
     createDom(document.querySelector('main'))
 
     this.buttonsControl = document.querySelector('.timeline__buttons')
@@ -24,27 +24,24 @@ export default class DomControl {
     this.onEventListeners()
   }
 
-  onEventListeners = () =>{
+  onEventListeners = () => {
     document.querySelector('.timeline__input').addEventListener('keydown', this.onText)
     this.audioBtn.addEventListener('click', this.onAudio)
     this.videoBtn.addEventListener('click', this.onVideo)
-
   }
 
   onText = (event) => {
     // text message
     if (event.keyCode === 13 && event.target.value.trim()) {
-    getGeolocation((position) => {
-      if (position) {
-        timelineItem(document.querySelector('.timeline__board'), {text : event.target.value}, position)
-        event.target.value = ''
-      }
-      else {
-        this.form.inputPosition(document.querySelector('.timeline__board'), {text : event.target.value})
-        event.target.value = ''
-      }
-    })
-    
+      getGeolocation((position) => {
+        if (position) {
+          timelineItem(document.querySelector('.timeline__board'), { text: event.target.value }, position)
+          event.target.value = ''
+        } else {
+          this.form.inputPosition(document.querySelector('.timeline__board'), { text: event.target.value })
+          event.target.value = ''
+        }
+      })
     }
   }
 
@@ -53,49 +50,46 @@ export default class DomControl {
 
     this.allow = true
     const stream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
+      audio: true
     })
-    .catch((err) => {
+      .catch((err) => {
       // not granted
-      this.accessesForm()
-      this.allow = false
-      return;
+        this.accessesForm()
+        this.allow = false
+      })
+
+    this.stream = stream
+
+    const recorder = new MediaRecorder(stream)
+    this.recorder = recorder
+    const chunks = []
+
+    recorder.addEventListener('start', () => {
+      console.log('start record')
+      this.audioBtn.classList.add('hidden')
+      this.videoBtn.classList.add('hidden')
+      this.recordControl.create(this.buttonsControl)
     })
 
-    this.stream = stream;
-    
-    const recorder = new MediaRecorder(stream);
-    this.recorder = recorder
-    const chunks = [];
+    recorder.addEventListener('dataavailable', (event) => {
+      chunks.push(event.data)
+    })
 
-    recorder.addEventListener("start", () => {
-      console.log("start record");
-      this.audioBtn.classList.add("hidden")
-      this.videoBtn.classList.add("hidden")
-      this.recordControl.create(this.buttonsControl)
- 
-    });
-  
-    recorder.addEventListener("dataavailable", (event) => {
-      chunks.push(event.data);
-    });
-  
-    recorder.addEventListener("stop", () => {
-      const blob = new Blob(chunks);
+    recorder.addEventListener('stop', () => {
+      const blob = new Blob(chunks)
       if (!this.state) return
       getGeolocation((position) => {
         if (position) {
-          timelineItem(document.querySelector('.timeline__board'), {audio : blob}, position)
-        }
-        else {
-          this.form.inputPosition(document.querySelector('.timeline__board'), {audio : blob})
+          timelineItem(document.querySelector('.timeline__board'), { audio: blob }, position)
+        } else {
+          this.form.inputPosition(document.querySelector('.timeline__board'), { audio: blob })
         }
       })
-    });
-  
-    recorder.start();
-  
+    })
+
+    recorder.start()
   }
+
   onVideo = async (event) => {
     // video message
     this.allow = true
@@ -107,87 +101,80 @@ export default class DomControl {
       // not granted
       this.accessesForm()
       this.allow = false
-      return
-    });
+    })
 
     if (!this.allow) return
-    this.stream = stream;
-    
+    this.stream = stream
+
     // второй поток, на 1м потоке не liveStream  не хотел показываться
-    const stream2 = await navigator.mediaDevices.getUserMedia({
+    this.liveStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true
     }).then((stream) => {
       this.videoStream()
-      this.videoStreamELement.srcObject = stream;
-      this.liveStream = stream;
-   
+      this.videoStreamELement.srcObject = stream
+      return stream
     }).catch((err) => {
       // not granted
       this.allow = false
       alert(' не настроено подключение!')
-      return
-    });
+    })
     if (!this.allow) return
 
-    const recorder = new MediaRecorder(stream);
+    const recorder = new MediaRecorder(stream)
     this.recorder = recorder
-    const chunks = [];
+    const chunks = []
 
-    recorder.addEventListener("start", () => {
-      console.log("start record");
-      this.audioBtn.classList.add("hidden")
-      this.videoBtn.classList.add("hidden")
+    recorder.addEventListener('start', () => {
+      console.log('start record')
+      this.audioBtn.classList.add('hidden')
+      this.videoBtn.classList.add('hidden')
       this.recordControl.create(this.buttonsControl)
- 
-    });
-  
-    recorder.addEventListener("dataavailable", (event) => {
-      chunks.push(event.data);
-     
-    });
-  
-    recorder.addEventListener("stop", () => {
-      const blob = new Blob(chunks);
+    })
+
+    recorder.addEventListener('dataavailable', (event) => {
+      chunks.push(event.data)
+    })
+
+    recorder.addEventListener('stop', () => {
+      const blob = new Blob(chunks)
       if (!this.state) return
       getGeolocation((position) => {
         if (position) {
-          timelineItem(document.querySelector('.timeline__board'), {video : blob}, position)
-        }
-        else {
-          this.form.inputPosition(document.querySelector('.timeline__board'), {video : blob})
+          timelineItem(document.querySelector('.timeline__board'), { video: blob }, position)
+        } else {
+          this.form.inputPosition(document.querySelector('.timeline__board'), { video: blob })
         }
       })
-    });
-  
-    recorder.start();
-  
+    })
+
+    recorder.start()
   }
 
-  onStop = (state=true) => {
+  onStop = (state = true) => {
     // stop recording  snd stream
     this.state = state
-    this.recorder.stop();
+    this.recorder.stop()
     this.stream.getTracks().forEach((track) => track.stop())
-    if (this.liveStream){
+    if (this.liveStream) {
       this.liveStream.getTracks().forEach((track) => track.stop())
       this.liveStream = null
     }
-    if (this.videoStreamELement){
+    if (this.videoStreamELement) {
       this.videoStreamELement.remove()
     }
   }
 
   videoStream = (stream) => {
     // create video element
-    this.videoStreamELement = document.createElement('video');
-    this.videoStreamELement.className = 'timeline__stream';
-    this.videoStreamELement.muted = true;
-    this.videoStreamELement.autoplay = true;
+    this.videoStreamELement = document.createElement('video')
+    this.videoStreamELement.className = 'timeline__stream'
+    this.videoStreamELement.muted = true
+    this.videoStreamELement.autoplay = true
     document.querySelector('main').appendChild(this.videoStreamELement)
   }
 
-  accessesForm(){
+  accessesForm () {
     // accesses form
     const accessesForm = document.createElement('form')
     accessesForm.className = 'accesses__form'
@@ -197,12 +184,9 @@ export default class DomControl {
 
     const accessesBtn = document.createElement('button')
     accessesBtn.textContent = 'ОK'
-    accessesBtn.addEventListener('click',() => accessesForm.remove())
+    accessesBtn.addEventListener('click', () => accessesForm.remove())
 
     accessesForm.append(accessesText, accessesBtn)
     document.querySelector('main').appendChild(accessesForm)
   }
 }
-
-
-
