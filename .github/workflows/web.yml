@@ -35,7 +35,7 @@ jobs:
         run: yarn
 
       - name: Run linters & test
-        run: yarn lint && test
+        run: yarn lint && yarn test
 
       - name: Build
         run: yarn build

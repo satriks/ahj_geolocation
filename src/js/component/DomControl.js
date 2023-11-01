@@ -47,7 +47,6 @@ export default class DomControl {
 
   onAudio = async (event) => {
     // audio message
-
     this.allow = true
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: true
@@ -106,7 +105,7 @@ export default class DomControl {
     if (!this.allow) return
     this.stream = stream
 
-    // второй поток, на 1м потоке не liveStream  не хотел показываться
+    // второй поток, на 1м потоке на liveStream не хотел показываться
     this.liveStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true
@@ -116,8 +115,8 @@ export default class DomControl {
       return stream
     }).catch((err) => {
       // not granted
+      this.accessesForm()
       this.allow = false
-      alert(' не настроено подключение!')
     })
     if (!this.allow) return
 
@@ -139,6 +138,7 @@ export default class DomControl {
     recorder.addEventListener('stop', () => {
       const blob = new Blob(chunks)
       if (!this.state) return
+
       getGeolocation((position) => {
         if (position) {
           timelineItem(document.querySelector('.timeline__board'), { video: blob }, position)
@@ -152,7 +152,7 @@ export default class DomControl {
   }
 
   onStop = (state = true) => {
-    // stop recording  snd stream
+    // stop recording and stream
     this.state = state
     this.recorder.stop()
     this.stream.getTracks().forEach((track) => track.stop())
@@ -166,7 +166,7 @@ export default class DomControl {
   }
 
   videoStream = (stream) => {
-    // create video element
+    // create video element for live stream
     this.videoStreamELement = document.createElement('video')
     this.videoStreamELement.className = 'timeline__stream'
     this.videoStreamELement.muted = true
